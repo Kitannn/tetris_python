@@ -202,13 +202,13 @@ def draw_text_middle(text, size, color, surface):
     pass
 
 
-def draw_grid(surface, grid):
+def draw_grid(surface, row, col):
     sx = top_left_x
     sy = top_left_y
 
-    for i in range(len(grid)):
+    for i in range(row):
         pygame.draw.line(surface, (128,128,128), (sx, sy+ i*block_size), (sx+play_width, sy+ i*block_size))
-        for j in range(len(grid[i])):
+        for j in range(col):
             pygame.draw.line(surface, (128, 128, 128), (sx, sy + j * block_size), (sx + j*block_size, sy + j * play_height))
 
 
@@ -232,7 +232,7 @@ def draw_next_shape(shape, surface):
 
     surface.blit(label, (sx + 10, sy - 30))
 
-def draw_window(surface, grid):
+def draw_window(surface):
     surface.fill((0, 0, 0))
 
     pygame.font.init()
@@ -247,10 +247,11 @@ def draw_window(surface, grid):
 
     pygame.draw.rect(surface, (255,0,0), (top_left_x, top_left_y, play_width, play_height), 4)
 
-    draw_grid(surface, grid)
+    draw_grid(surface, 20,10)
     #pygame.display.update()
 
 def main(win):
+    global grid
     locked_positions = {}
     grid = create_grid(locked_positions)
 
@@ -311,7 +312,7 @@ def main(win):
             next_piece = get_shape()
             change_piece = False
 
-        draw_window(win, grid)
+        draw_window(win)
         draw_next_shape(next_piece, win)
         pygame.display.update()
 
