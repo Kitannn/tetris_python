@@ -214,9 +214,9 @@ def draw_grid(surface, row, col):
     sy = top_left_y
 
     for i in range(row):
-        pygame.draw.line(surface, (128,128,128), (sx, sy+ i*block_size), (sx+play_width, sy+ i*block_size))
+        pygame.draw.line(surface, (105,105,105), (sx, sy+ i*block_size), (sx+play_width, sy+ i*block_size))
         for j in range(col):
-            pygame.draw.line(surface, (128, 128, 128), (sx+ j * block_size, sy), (sx + j*block_size, sy + play_height))
+            pygame.draw.line(surface, (105, 105, 105), (sx+ j * block_size, sy), (sx + j*block_size, sy + play_height))
 
 
 def clear_rows(grid, locked):
@@ -272,13 +272,13 @@ def draw_next_shape(shape, surface):
         row = list(line)
         for j, column in enumerate(row):
             if column == '0':
-                pygame.draw.rect(surface, shape.color, (sx + j*block_size, sy + i*block_size, block_size, 0))
+                pygame.draw.rect(surface, shape.color, (sx + j*block_size, sy + i*block_size, block_size,30),0)
 
     surface.blit(label, (sx + 10, sy - 30))
 
 
 def draw_window(surface, grid, score=0, highscore=0):
-    surface.fill((0, 0, 0))
+    surface.fill((38, 57, 61))
 
     pygame.font.init()
     font = pygame.font.SysFont('comicsans', 60)
@@ -342,10 +342,10 @@ def main(win):
 
         if fall_time/1000 > fall_speed:
             fall_time = 0
-            current_piece.y += 1 #automatically moves piece down
+            current_piece.y += 1  # automatically moves piece down
             if not(valid_space(current_piece, grid)) and current_piece.y > 0:
                 current_piece.y -= 1
-                change_piece = True #locks all positions and generates next piece
+                change_piece = True  # locks all positions and generates next piece
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -355,20 +355,25 @@ def main(win):
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     current_piece.x -= 1
-                    if not(valid_space(current_piece, grid)): #if move invalid revert
+                    if not(valid_space(current_piece, grid)):  # if move invalid revert
                         current_piece.x += 1
-                if event.key == pygame.K_RIGHT:
+
+                elif event.key == pygame.K_RIGHT:
                     current_piece.x += 1
                     if not(valid_space(current_piece, grid)):
                         current_piece.x -= 1
+
+                elif event.key == pygame.K_UP:  # rotate
+                    current_piece.rotation = current_piece.rotation + 1 % len(current_piece.shape)
+                    if not (valid_space(current_piece, grid)):
+                        current_piece.rotation = current_piece.rotation - 1 % len(current_piece.shape)
+
                 if event.key == pygame.K_DOWN:
                     current_piece.y += 1
                     if not (valid_space(current_piece, grid)):
                         current_piece.y -= 1
-                if event.key == pygame.K_UP:
-                    current_piece.rotation += 1
-                    if not (valid_space(current_piece, grid)):
-                        current_piece -= 1
+
+
 
         shape_pos = convert_shape_format(current_piece)
 
@@ -393,7 +398,7 @@ def main(win):
         if check_lost(locked_positions):
             draw_text_middle("Game Over", 80, (255,255,255), win)
             pygame.display.update()
-            pygame.time.delay(1500)
+            pygame.time.delay(2500)
             run = False
             update_score(score)
 
@@ -403,7 +408,7 @@ def main(win):
 def main_menu(win):
     run = True
     while run:
-        win.fill((0,0,0))
+        win.fill((38,57,61))
         draw_text_middle("Press Any Key To Start", 60, (255,255,255), win)
         pygame.display.update()
         for event in pygame.event.get():
